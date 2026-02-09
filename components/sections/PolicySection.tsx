@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { POLICY_ITEMS } from "@/lib/constants";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
@@ -20,14 +19,12 @@ function CheckIcon() {
 }
 
 export default function PolicySection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <section
       id="winning"
       style={{
-        backgroundColor: "var(--off-white)",
+        backgroundColor: "var(--sand)",
         padding: "calc(var(--padding-v) * 2) var(--padding-h)",
       }}
     >
@@ -75,8 +72,7 @@ export default function PolicySection() {
       </div>
 
       {/* Policy items card */}
-      <motion.div
-        ref={ref}
+      <div
         style={{
           maxWidth: "680px",
           margin: "0 auto",
@@ -84,16 +80,19 @@ export default function PolicySection() {
           boxShadow: "0 2px 12px rgba(0, 0, 0, 0.06)",
           borderRadius: "24px",
           padding: "8px 40px",
+          textAlign: "left",
+          color: "var(--off-black)",
         }}
       >
         {POLICY_ITEMS.map((item, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : undefined}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{
               duration: 0.5,
-              delay: 0.15 + i * 0.08,
+              delay: i * 0.08,
               ease: [0.23, 1, 0.32, 1],
             }}
             style={{
@@ -141,7 +140,7 @@ export default function PolicySection() {
             </div>
           </motion.div>
         ))}
-      </motion.div>
+      </div>
     </section>
   );
 }

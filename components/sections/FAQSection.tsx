@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { FAQ_DATA } from "@/lib/constants";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
@@ -16,70 +15,107 @@ function FAQItem({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const isHighlighted = isOpen || isHovered;
+
   return (
-    <div style={{ borderBottom: "1px solid rgba(17, 0, 0, 0.1)" }}>
-      <button
-        onClick={onToggle}
+    <button
+      onClick={onToggle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      data-open={isOpen}
+      style={{
+        width: "100%",
+        display: "flex",
+        gap: "16px",
+        alignItems: "flex-start",
+        padding: "20px 22px 20px 28px",
+        textAlign: "left",
+        backgroundColor: isHighlighted ? "var(--highlight)" : "var(--off-white)",
+        border: "none",
+        borderRadius: "40px",
+        cursor: "pointer",
+        color: isHighlighted ? "var(--dark-green)" : "var(--off-black)",
+        transition: "background-color .2s cubic-bezier(.23,1,.32,1), color .2s cubic-bezier(.23,1,.32,1)",
+        userSelect: "none",
+      }}
+      aria-expanded={isOpen}
+    >
+      <div
         style={{
-          width: "100%",
+          flex: 1,
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "24px 0",
-          textAlign: "left",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          color: "var(--off-black)",
+          flexDirection: "column",
+          alignItems: "flex-start",
         }}
-        aria-expanded={isOpen}
       >
         <span
           style={{
             fontFamily: "var(--font-grotesk-bold)",
             fontWeight: 700,
             fontSize: "var(--m-text-size)",
-            paddingRight: "16px",
+            lineHeight: 1,
+            display: "flex",
+            alignItems: "center",
+            minHeight: "32px",
           }}
         >
           {question}
         </span>
-        <motion.svg
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          style={{ flexShrink: 0, opacity: 0.5 }}
+
+        {/* Answer area — always in DOM, animated via grid-template-rows */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateRows: isOpen ? "1fr" : "0fr",
+            transition: "grid-template-rows .3s cubic-bezier(.23,1,.32,1)",
+          }}
         >
-          <polyline points="6 9 12 15 18 9" />
-        </motion.svg>
-      </button>
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-            style={{ overflow: "hidden" }}
-          >
+          <div style={{ overflow: "hidden" }}>
             <p
               style={{
-                paddingBottom: "24px",
-                color: "rgba(17, 0, 0, 0.6)",
-                maxWidth: "var(--container-lg)",
+                fontSize: "var(--s-text-size)",
+                lineHeight: 1.5,
+                paddingTop: "8px",
+                paddingBottom: "4px",
+                fontWeight: 400,
               }}
             >
               {answer}
             </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Arrow icon */}
+      <div
+        style={{
+          width: "32px",
+          height: "32px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          transition: "top .2s cubic-bezier(.68,.05,.265,1.55)",
+        }}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          style={{
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform .2s cubic-bezier(.68,.05,.265,1.55)",
+          }}
+        >
+          <path d="M4 7L9 12L14 7" />
+        </svg>
+      </div>
+    </button>
   );
 }
 
@@ -87,13 +123,37 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faqs" className="section-container" style={{ backgroundColor: "var(--off-white)" }}>
-      <div className="content-width">
+    <section
+      id="faqs"
+      style={{
+        backgroundColor: "var(--sand)",
+        padding: "calc(var(--padding-v) * 2) var(--padding-h)",
+      }}
+    >
+      <div style={{ maxWidth: "1076px", margin: "0 auto" }}>
         <ScrollReveal>
-          <h2 style={{ marginBottom: "var(--gap-v)" }}>FAQs</h2>
+          <h2
+            style={{
+              fontFamily: "var(--font-grotesk-display)",
+              fontWeight: 700,
+              fontSize: "clamp(32px, 5vw, 48px)",
+              lineHeight: 0.95,
+              letterSpacing: "-0.02em",
+              marginBottom: "64px",
+              whiteSpace: "pre-line",
+            }}
+          >
+            {"Frequently Asked\nQuestions"}
+          </h2>
         </ScrollReveal>
 
-        <div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
           {FAQ_DATA.map((faq, i) => (
             <FAQItem
               key={i}

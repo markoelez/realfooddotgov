@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { motion, useInView, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
 import { PYRAMID_TIERS } from "@/lib/constants";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
@@ -306,7 +306,6 @@ function TierDetail({
   index: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const foods = DETAIL_POSITIONS[tier.id] || [];
 
   const { scrollYProgress } = useScroll({
@@ -398,7 +397,7 @@ function TierDetail({
           }}
         >
           {foods.map((food, i) => (
-            <motion.div
+            <div
               key={food.image}
               style={{
                 position: "absolute",
@@ -408,13 +407,6 @@ function TierDetail({
                 zIndex: food.zIndex,
                 pointerEvents: "none",
               }}
-              initial={{ opacity: 0, scale: 0.8, y: 30 }}
-              animate={isInView ? { opacity: 1, scale: 1, y: 0 } : undefined}
-              transition={{
-                duration: 0.6,
-                delay: 0.2 + i * 0.04,
-                ease: [0.23, 1, 0.32, 1],
-              }}
             >
               <Image
                 src={food.image}
@@ -423,7 +415,7 @@ function TierDetail({
                 height={400}
                 style={{ width: "100%", height: "auto", objectFit: "contain" }}
               />
-            </motion.div>
+            </div>
           ))}
         </motion.div>
       </div>
