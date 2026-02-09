@@ -5,8 +5,8 @@ import HeroSection from "@/components/sections/HeroSection";
 import HealthCrisisSection from "@/components/sections/HealthCrisisSection";
 import PyramidSection from "@/components/sections/PyramidSection";
 import RealFoodDefinition from "@/components/sections/RealFoodDefinition";
-import FoodsToAvoidSection from "@/components/sections/FoodsToAvoidSection";
-import RealAnswersSection from "@/components/sections/RealAnswersSection";
+import GuidanceRevealSection from "@/components/sections/GuidanceRevealSection";
+import EatRealFoodStatement from "@/components/sections/EatRealFoodStatement";
 import PolicySection from "@/components/sections/PolicySection";
 import ResourcesSection from "@/components/sections/ResourcesSection";
 import FAQSection from "@/components/sections/FAQSection";
@@ -21,11 +21,11 @@ export default function Home() {
         <HeroSection />
         <HealthCrisisSection />
         <RealFoodDefinition />
+        <GuidanceRevealSection />
         <PyramidSection />
-        <FoodsToAvoidSection />
-        <RealAnswersSection />
-        <PolicySection />
+        <EatRealFoodStatement />
         <ResourcesSection />
+        <PolicySection />
         <FAQSection />
         <CTASection />
       </main>

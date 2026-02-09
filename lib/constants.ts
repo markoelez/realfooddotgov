@@ -214,7 +214,7 @@ export const PYRAMID_TIERS: PyramidTier[] = [
     foods: [
       { name: "Bread", image: "/images/pyramid/bread.webp", alt: "Bread" },
       { name: "Oats", image: "/images/pyramid/bowl-oats.webp", alt: "Oats" },
-      { name: "Rice", image: "/images/pyramid/rice.webp", alt: "Rice" },
+      { name: "Rolled Oats", image: "/images/pyramid/oats.webp", alt: "Rolled Oats" },
     ],
   },
 ];
