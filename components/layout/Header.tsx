@@ -6,7 +6,6 @@ import {
   useScroll,
   useTransform,
   useSpring,
-  AnimatePresence,
 } from "framer-motion";
 import { NAV_LINKS } from "@/lib/constants";
 
@@ -18,7 +17,6 @@ const SECTIONS = NAV_LINKS.map((link) => ({
 const DARK_SECTIONS = new Set(["real-food", "solution"]);
 
 export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(SECTIONS[0].id);
   const [isOverVideo, setIsOverVideo] = useState(true);
   const [isNearBottom, setIsNearBottom] = useState(false);
@@ -67,19 +65,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", updateState);
   }, [updateState]);
 
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [menuOpen]);
-
   const handleNavClick = (href: string) => {
-    setMenuOpen(false);
     const el = document.querySelector(href);
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
@@ -100,24 +86,10 @@ export default function Header() {
     ? "rgba(255, 255, 255, 0.4)"
     : "rgba(17, 0, 0, 0.4)";
   const labelColor = isDark ? "#fff" : "rgba(17, 0, 0, 0.75)";
-  const logoColor = isDark
-    ? "rgba(255, 255, 255, 0.75)"
-    : "rgba(17, 0, 0, 0.75)";
-
   return (
     <>
-      <style>{`
-        .nav-desktop { display: none; }
-        .nav-mobile-btn { display: flex; }
-        @media (min-width: 901px) {
-          .nav-desktop { display: flex; }
-          .nav-mobile-btn { display: none; }
-        }
-      `}</style>
-
-      {/* Desktop nav */}
+      {/* Nav */}
       <motion.nav
-        className="nav-desktop"
         style={{
           position: "fixed",
           left: 0,
@@ -243,102 +215,6 @@ export default function Header() {
         </motion.div>
       </motion.nav>
 
-      {/* Mobile hamburger button */}
-      <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        className="nav-mobile-btn"
-        aria-label="Toggle menu"
-        style={{
-          position: "fixed",
-          top: "64px",
-          right: "var(--padding-h)",
-          zIndex: 99999,
-          flexDirection: "column",
-          gap: "5px",
-          padding: "12px",
-          background: pillBg,
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          border: "none",
-          borderRadius: "999px",
-          cursor: "pointer",
-          width: "var(--nav-height)",
-          height: "var(--nav-height)",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "background-color 0.15s ease",
-        }}
-      >
-        <span
-          style={{
-            display: "block",
-            height: "2px",
-            width: "18px",
-            backgroundColor: logoColor,
-            transition: "all 0.3s ease",
-            transform: menuOpen
-              ? "rotate(45deg) translate(3.5px, 3.5px)"
-              : "none",
-          }}
-        />
-        <span
-          style={{
-            display: "block",
-            height: "2px",
-            width: "18px",
-            backgroundColor: logoColor,
-            transition: "all 0.3s ease",
-            opacity: menuOpen ? 0 : 1,
-          }}
-        />
-        <span
-          style={{
-            display: "block",
-            height: "2px",
-            width: "18px",
-            backgroundColor: logoColor,
-            transition: "all 0.3s ease",
-            transform: menuOpen
-              ? "rotate(-45deg) translate(3.5px, -3.5px)"
-              : "none",
-          }}
-        />
-      </button>
-
-      {/* Mobile menu overlay */}
-      {menuOpen && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 99998,
-            backgroundColor: "var(--off-black)",
-            display: "flex",
-            flexDirection: "column",
-            padding: "80px 20px 20px 16px",
-          }}
-        >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick(link.href);
-              }}
-              style={{
-                fontFamily: "var(--font-grotesk-bold)",
-                fontSize: "var(--h3-text-size)",
-                color: "var(--off-white)",
-                textDecoration: "none",
-                padding: "12px 0",
-              }}
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      )}
     </>
   );
 }

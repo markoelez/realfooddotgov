@@ -120,158 +120,106 @@ export default function ResourcesSection() {
   if (isMobile) {
     return (
       <section
+        ref={sectionRef}
         id="resources"
         style={{
           backgroundColor: "var(--off-white)",
-          padding: "var(--padding-v) var(--padding-h)",
+          minHeight: "350vh",
+          position: "relative",
+          overflow: "clip",
         }}
       >
-        <h2
+        <div
           style={{
-            fontFamily: "var(--font-grotesk-display)",
-            fontWeight: 700,
-            fontSize: "clamp(32px, 5vw, 48px)",
-            lineHeight: 0.95,
-            letterSpacing: "-0.02em",
-            marginBottom: "20px",
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            padding: "0 var(--padding-h)",
           }}
         >
-          Resources
-        </h2>
-        <p
-          style={{
-            fontSize: "var(--s-text-size)",
-            lineHeight: 1.4,
-            marginBottom: "28px",
-          }}
-        >
-          Explore the research, recommendations, and implementation
-          guidance that shape the Dietary Guidelines, including the
-          science, the policy guidance, and the everyday serving framework.
-        </p>
-        <a
-          href="https://www.whitehouse.gov/videos/press-secretary-karoline-leavitt-briefs-members-of-the-media-jan-7-2026/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "10px",
-            padding: "12px 24px",
-            borderRadius: "999px",
-            border: "none",
-            backgroundColor: "var(--sand)",
-            color: "var(--off-black)",
-            fontFamily: "var(--font-grotesk-medium)",
-            fontWeight: 500,
-            fontSize: "var(--s-text-size)",
-            textDecoration: "none",
-            marginBottom: "40px",
-          }}
-        >
-          Watch the press release
-          <span style={{ fontSize: "16px" }}>&rarr;</span>
-        </a>
-
-        {/* Card stack — static on mobile */}
-        <div style={{ width: "100%", maxWidth: "320px", margin: "0 auto 40px", aspectRatio: "8 / 10", position: "relative" }}>
-          {PDF_RESOURCES.map((resource, i) => (
-            <a
-              key={i}
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                position: "absolute",
-                top: i * 20,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                borderRadius: "24px",
-                overflow: "hidden",
-                boxShadow: "0 16px 40px rgba(0,0,0,.12)",
-                backgroundColor: resource.bgColor,
-                zIndex: i + 1,
-                transform: `rotate(${CARD_ROTATIONS[i]}deg)`,
-              }}
-            >
-              <Image
-                src={resource.coverImage}
-                alt={resource.title}
-                fill
-                style={{ objectFit: "cover" }}
-              />
-            </a>
-          ))}
-        </div>
-
-        {/* Download links */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {PDF_RESOURCES.map((resource, i) => (
-            <a
-              key={i}
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: "16px",
-                padding: "16px 0",
-                textDecoration: "none",
-                color: "var(--off-black)",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "var(--s-text-size)",
-                  lineHeight: 1.3,
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
-                }}
-              >
-                Download {resource.title}
-              </span>
-              <span
-                style={{
-                  flexShrink: 0,
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(17, 0, 0, 0.08)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "16px",
-                }}
-              >
-                &rarr;
-              </span>
-            </a>
-          ))}
-
-          <div
+          <h2
             style={{
-              marginTop: "24px",
-              fontSize: "12px",
-              lineHeight: 1.4,
-              color: "rgba(17, 0, 0, 0.4)",
+              fontFamily: "var(--font-grotesk-display)",
+              fontWeight: 700,
+              fontSize: "clamp(32px, 8vw, 48px)",
+              lineHeight: 0.95,
+              letterSpacing: "-0.02em",
+              marginBottom: "16px",
             }}
           >
-            <p>
-              This content is undergoing a Section 508 review. If you need
-              immediate assistance accessing this content, please submit a
-              request to{" "}
+            Resources
+          </h2>
+          <p
+            style={{
+              fontSize: "var(--s-text-size)",
+              lineHeight: 1.4,
+              marginBottom: "24px",
+            }}
+          >
+            Explore the research, recommendations, and implementation
+            guidance that shape the Dietary Guidelines.
+          </p>
+
+          {/* Card stack with scroll animation */}
+          <div
+            style={{
+              width: "min(70vw, 280px)",
+              aspectRatio: "8 / 10",
+              position: "relative",
+              margin: "0 auto",
+            }}
+          >
+            <DocStack scrollYProgress={scrollYProgress} />
+          </div>
+
+          {/* Download links */}
+          <div style={{ display: "flex", flexDirection: "column", marginTop: "24px" }}>
+            {PDF_RESOURCES.map((resource, i) => (
               <a
-                href="mailto:DietaryGuidelines@usda.gov"
-                style={{ textDecoration: "underline", color: "inherit" }}
+                key={i}
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "12px",
+                  padding: "12px 0",
+                  textDecoration: "none",
+                  color: "var(--off-black)",
+                }}
               >
-                DietaryGuidelines@usda.gov
+                <span
+                  style={{
+                    fontSize: "var(--s-text-size)",
+                    lineHeight: 1.3,
+                    textDecoration: "underline",
+                    textUnderlineOffset: "3px",
+                  }}
+                >
+                  Download {resource.title}
+                </span>
+                <span
+                  style={{
+                    flexShrink: 0,
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(17, 0, 0, 0.08)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "14px",
+                  }}
+                >
+                  &rarr;
+                </span>
               </a>
-              . Content will be updated pending the outcome of the Section 508
-              review.
-            </p>
+            ))}
           </div>
         </div>
       </section>
