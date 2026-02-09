@@ -270,20 +270,18 @@ const DETAIL_POSITIONS: Record<string, { image: string; top: string; left: strin
     { image: "/images/pyramid/shrimp.webp",        top: "88%",  left: "35%",  width: "28%",  zIndex: 9 },
   ],
   "vegetables-fruits": [
-    { image: "/images/pyramid/carrots.webp",       top: "-8%",  left: "50%",  width: "80%",  zIndex: -2 },
-    { image: "/images/pyramid/broccoli.webp",      top: "-10%", left: "20%",  width: "68%",  zIndex: -1 },
-    { image: "/images/pyramid/frozen-peas.webp",   top: "8%",   left: "-10%", width: "42%",  zIndex: -1 },
-    { image: "/images/pyramid/butternut.webp",     top: "18%",  left: "88%",  width: "32%",  zIndex: 0 },
-    { image: "/images/pyramid/green-beans.webp",   top: "30%",  left: "98%",  width: "18%",  zIndex: 1 },
-    { image: "/images/pyramid/oranges.webp",       top: "52%",  left: "50%",  width: "45%",  zIndex: 4 },
-    { image: "/images/pyramid/blueberries.webp",   top: "38%",  left: "72%",  width: "20%",  zIndex: 5 },
-    { image: "/images/pyramid/lettuce.webp",       top: "12%",  left: "68%",  width: "48%",  zIndex: 6 },
-    { image: "/images/pyramid/strawberry.webp",    top: "58%",  left: "82%",  width: "16%",  zIndex: 6 },
-    { image: "/images/pyramid/apples.webp",        top: "30%",  left: "30%",  width: "30%",  zIndex: 10 },
-    { image: "/images/pyramid/tomatoes.webp",      top: "20%",  left: "10%",  width: "32%",  zIndex: 11 },
-    { image: "/images/pyramid/bananas.webp",       top: "18%",  left: "-20%", width: "62%",  zIndex: 12 },
-    { image: "/images/pyramid/grapes.webp",        top: "48%",  left: "-25%", width: "52%",  zIndex: 12 },
-    { image: "/images/pyramid/potato.webp",        top: "52%",  left: "15%",  width: "32%",  zIndex: 14 },
+    { image: "/images/pyramid/carrots.webp",       top: "-8%",  left: "97%",  width: "80%",  zIndex: -2 },
+    { image: "/images/pyramid/broccoli.webp",      top: "-10%", left: "57%",  width: "85%",  zIndex: -1 },
+    { image: "/images/pyramid/frozen-peas.webp",   top: "8%",   left: "10%",  width: "52%",  zIndex: -1 },
+    { image: "/images/pyramid/oranges.webp",       top: "67%",  left: "83%",  width: "68%",  zIndex: 4 },
+    { image: "/images/pyramid/blueberries.webp",   top: "48%",  left: "97%",  width: "32%",  zIndex: -3 },
+    { image: "/images/pyramid/lettuce.webp",       top: "40%",  left: "120%", width: "48%",  zIndex: 2 },
+    { image: "/images/pyramid/strawberry.webp",    top: "58%",  left: "74%",  width: "16%",  zIndex: 6 },
+    { image: "/images/pyramid/apples.webp",        top: "32%",  left: "62%",  width: "40%",  zIndex: 10 },
+    { image: "/images/pyramid/tomatoes.webp",      top: "32%",  left: "27%",  width: "42%",  zIndex: 11 },
+    { image: "/images/pyramid/bananas.webp",       top: "25%",  left: "-56%", width: "85%",  zIndex: 12 },
+    { image: "/images/pyramid/grapes.webp",        top: "68%",  left: "-18%", width: "65%",  zIndex: 12 },
+    { image: "/images/pyramid/potato.webp",        top: "75%",  left: "43%",  width: "45%",  zIndex: 11 },
   ],
   "whole-grains": [
     { image: "/images/pyramid/bread.webp",         top: "-45%", left: "40%",  width: "120%", zIndex: 2 },
@@ -313,9 +311,14 @@ function TierDetail({
     offset: ["start end", "end start"],
   });
 
-  // Subtle parallax: text drifts right, images drift left
-  const textX = useTransform(scrollYProgress, [0, 1], [-50, 50]);
-  const imagesX = useTransform(scrollYProgress, [0, 1], [40, -40]);
+  // Parallax: images drift based on tier, text stays still
+  const textX = useTransform(scrollYProgress, [0, 1], [0, 0]);
+  const imagesX = useTransform(
+    scrollYProgress,
+    [0, 1],
+    tier.id === "vegetables-fruits" ? [-120, 120] :
+    [120, -120]
+  );
 
   return (
     <div
