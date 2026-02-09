@@ -1,26 +1,300 @@
 @import "tailwindcss";
 
+/* ===== Font Faces ===== */
+@font-face {
+  font-family: "Die Grotesk A";
+  src: url("/fonts/die-grotesk-a-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Die Grotesk B";
+  src: url("/fonts/die-grotesk-b-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Die Grotesk B";
+  src: url("/fonts/die-grotesk-b-black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Die Grotesk D";
+  src: url("/fonts/die-grotesk-d-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== CSS Variables ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colors */
+  --off-white: #fdfbee;
+  --off-black: #110000;
+  --sand: #f3f0d6;
+  --dark-green: #153f15;
+  --green: #066742;
+  --highlight: #f4ffae;
+  --highlight-bright: #f0ff93;
+  --lime: #b7d96e;
+  --olive: #8eb258;
+  --cream: #fdfbee;
+  --red: #b50000;
+  --red-bright: #d50000;
+
+  /* Fonts */
+  --font-grotesk-medium: "Die Grotesk A", system-ui, sans-serif;
+  --font-grotesk-bold: "Die Grotesk B", system-ui, sans-serif;
+  --font-grotesk-display: "Die Grotesk D", system-ui, sans-serif;
+
+  /* Typography */
+  --h1-text-size: calc(112 / 16 * 1rem);
+  --h1-line-height: 0.84;
+  --h2-text-size: calc(80 / 16 * 1rem);
+  --h-text-size: calc(96 / 16 * 1rem);
+  --h-line-height: 0.956;
+  --h3-text-size: calc(44 / 16 * 1rem);
+  --h3-line-height: 1.04;
+  --h4-text-size: calc(24 / 16 * 1rem);
+  --m-text-size: calc(16 / 16 * 1rem);
+  --m-line-height: 1.18;
+  --m-letter-spacing: calc(16px * 0.02);
+  --s-text-size: calc(14 / 16 * 1rem);
+  --s-line-height: 1.4;
+  --s-letter-spacing: calc(14px * 0.02);
+  --xs-text-size: calc(12 / 16 * 1rem);
+  --xs-line-height: 1.1;
+
+  /* Layout */
+  --container: 1076px;
+  --container-lg: 528px;
+  --container-md: 460px;
+  --container-sm: 340px;
+  --padding-h: clamp(24px, 10vw, 180px);
+  --padding-v: 128px;
+  --padding-n: 210px;
+  --gap-v: 100px;
+  --gap-h: 32px;
+  --nav-height: 44px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (max-width: 1120px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --padding-h: 28px;
+    --padding-v: 100px;
+    --gap-h: 32px;
+    --padding-n: 128px;
+    --h-text-size: calc(52 / 16 * 1rem);
   }
 }
 
+@media (max-width: 768px) {
+  :root {
+    --padding-h: 28px;
+    --gap-h: 16px;
+    --gap-v: 80px;
+    --h1-text-size: calc(96 / 16 * 1rem);
+    --h2-text-size: calc(52.46 / 16 * 1rem);
+  }
+}
+
+@media (max-width: 580px) {
+  :root {
+    --container-lg: 320px;
+    --padding-h: 24px;
+    --h1-text-size: calc(44 / 16 * 1rem);
+    --h1-line-height: 0.92;
+    --h-text-size: calc(32 / 16 * 1rem);
+    --h-line-height: 1;
+  }
+}
+
+/* ===== Tailwind Theme ===== */
+@theme inline {
+  --color-off-white: #fdfbee;
+  --color-sand: #f3f0d6;
+  --color-off-black: #110000;
+  --color-dark-green: #153f15;
+  --color-green: #066742;
+  --color-highlight: #f4ffae;
+  --color-highlight-bright: #f0ff93;
+  --color-lime: #b7d96e;
+  --color-olive: #8eb258;
+  --color-red: #b50000;
+  --color-red-bright: #d50000;
+}
+
+/* ===== Global Reset ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+/* ===== Lenis ===== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ===== Body ===== */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--off-white);
+  color: var(--off-black);
+  font-family: var(--font-grotesk-medium);
+  font-size: var(--m-text-size);
+  line-height: var(--m-line-height);
+  letter-spacing: var(--m-letter-spacing);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Typography ===== */
+h1 {
+  font-family: var(--font-grotesk-display);
+  font-weight: 700;
+  font-size: var(--h1-text-size);
+  line-height: var(--h1-line-height);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-family: var(--font-grotesk-bold);
+  font-weight: 700;
+  font-size: var(--h2-text-size);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-family: var(--font-grotesk-bold);
+  font-weight: 700;
+  font-size: var(--h3-text-size);
+  line-height: var(--h3-line-height);
+  letter-spacing: -0.02em;
+}
+
+h4 {
+  font-family: var(--font-grotesk-bold);
+  font-weight: 700;
+  font-size: var(--h4-text-size);
+  line-height: 0.92;
+}
+
+p {
+  line-height: var(--m-line-height);
+  letter-spacing: var(--m-letter-spacing);
+}
+
+/* ===== Layout ===== */
+.section-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  padding: var(--padding-v) var(--padding-h);
+}
+
+.content-width {
+  width: 100%;
+  max-width: var(--container);
+}
+
+.content-width-lg {
+  width: 100%;
+  max-width: var(--container-lg);
+}
+
+/* ===== Stat Value ===== */
+.stat-value {
+  font-family: var(--font-grotesk-display);
+  font-weight: 700;
+  font-size: var(--h-text-size);
+  line-height: var(--h-line-height);
+  letter-spacing: -0.03em;
+}
+
+/* ===== Food Grid ===== */
+.food-grid-item {
+  cursor: pointer;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+/* ===== Video Modal ===== */
+.video-overlay {
+  z-index: 999999;
+}
+
+/* ===== Grok Carousel ===== */
+.grok-carousel {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.grok-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Pulse Animation ===== */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 4px 0 rgba(240, 255, 145, 1);
+  }
+  75% {
+    box-shadow: 0 0 6px 8px rgba(240, 255, 145, 0);
+  }
+  to {
+    box-shadow: 0 0 8px 0 rgba(240, 255, 145, 0);
+  }
+}
+
+.cta-pulse {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ===== Utility ===== */
+.text-s {
+  font-size: var(--s-text-size);
+  line-height: var(--s-line-height);
+  letter-spacing: var(--s-letter-spacing);
+}
+
+.text-xs {
+  font-size: var(--xs-text-size);
+  line-height: var(--xs-line-height);
 }
