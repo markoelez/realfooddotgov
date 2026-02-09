@@ -20,8 +20,8 @@ export default function Home() {
       <main>
         <HeroSection />
         <HealthCrisisSection />
-        <PyramidSection />
         <RealFoodDefinition />
+        <PyramidSection />
         <FoodsToAvoidSection />
         <RealAnswersSection />
         <PolicySection />
