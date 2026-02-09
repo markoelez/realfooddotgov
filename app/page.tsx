@@ -10,7 +10,9 @@ import EatRealFoodStatement from "@/components/sections/EatRealFoodStatement";
 import PolicySection from "@/components/sections/PolicySection";
 import ResourcesSection from "@/components/sections/ResourcesSection";
 import FAQSection from "@/components/sections/FAQSection";
+import ClosingStatement from "@/components/sections/ClosingStatement";
 import CTASection from "@/components/sections/CTASection";
+import EatRealCarousel from "@/components/sections/EatRealCarousel";
 
 export default function Home() {
   return (
@@ -27,7 +29,9 @@ export default function Home() {
         <ResourcesSection />
         <PolicySection />
         <FAQSection />
+        <ClosingStatement />
         <CTASection />
+        <EatRealCarousel />
       </main>
       <Footer />
     </>
