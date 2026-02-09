@@ -337,7 +337,7 @@ function TierDetail({
       ref={ref}
       style={{
         backgroundColor: "#FDFBEE",
-        overflow: "visible",
+        overflow: isMobile ? "clip" : "visible",
         position: "relative",
         zIndex: 1,
       }}

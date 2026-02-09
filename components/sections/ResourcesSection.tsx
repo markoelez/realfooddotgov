@@ -25,11 +25,13 @@ function DocCard({
   index,
   total,
   scrollYProgress,
+  cardOffset = 80,
 }: {
   resource: (typeof PDF_RESOURCES)[number];
   index: number;
   total: number;
   scrollYProgress: MotionValue<number>;
+  cardOffset?: number;
 }) {
   // Each card has its own scroll range — they arrive one after another
   // Cards fill 0–0.85 of scroll, leaving 0.85–1.0 as "hold" with all stacked
@@ -41,7 +43,7 @@ function DocCard({
   const y = useTransform(
     scrollYProgress,
     [entryStart, entryEnd],
-    [800, index * 80]
+    [800, index * cardOffset]
   );
   // Rotation stays consistent (skewed to side)
   const rotate = useTransform(
@@ -87,7 +89,7 @@ function DocCard({
   );
 }
 
-function DocStack({ scrollYProgress }: { scrollYProgress: MotionValue<number> }) {
+function DocStack({ scrollYProgress, cardOffset = 80 }: { scrollYProgress: MotionValue<number>; cardOffset?: number }) {
   return (
     <div
       style={{
@@ -103,6 +105,7 @@ function DocStack({ scrollYProgress }: { scrollYProgress: MotionValue<number> })
           index={i}
           total={PDF_RESOURCES.length}
           scrollYProgress={scrollYProgress}
+          cardOffset={cardOffset}
         />
       ))}
     </div>
@@ -166,17 +169,18 @@ export default function ResourcesSection() {
           {/* Card stack with scroll animation */}
           <div
             style={{
-              width: "min(70vw, 280px)",
+              width: "min(55vw, 220px)",
               aspectRatio: "8 / 10",
               position: "relative",
               margin: "0 auto",
+              marginBottom: `${(PDF_RESOURCES.length - 1) * 40 + 20}px`,
             }}
           >
-            <DocStack scrollYProgress={scrollYProgress} />
+            <DocStack scrollYProgress={scrollYProgress} cardOffset={40} />
           </div>
 
           {/* Download links */}
-          <div style={{ display: "flex", flexDirection: "column", marginTop: "24px" }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             {PDF_RESOURCES.map((resource, i) => (
               <a
                 key={i}

@@ -164,7 +164,7 @@ export default function HeroSection() {
           alignItems: "center",
           justifyContent: "center",
           margin: "0 auto",
-          width: isMobile ? "100vw" : videoWidth,
+          width: isMobile ? "100%" : videoWidth,
         }}
         initial={{ opacity: 0, y: 80 }}
         animate={{ opacity: 1, y: 0 }}

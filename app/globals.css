@@ -164,8 +164,11 @@ html.lenis body {
 }
 
 /* ===== Body ===== */
+html {
+  overflow-x: clip;
+}
+
 body {
-  overflow-x: hidden;
   background: var(--off-white);
   color: var(--off-black);
   font-family: var(--font-grotesk-medium);
