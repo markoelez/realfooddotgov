@@ -70,7 +70,7 @@ function RevealParagraph() {
     <div
       ref={containerRef}
       style={{
-        height: "300vh",
+        height: "250vh",
         position: "relative",
         width: "100%",
       }}

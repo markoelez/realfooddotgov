@@ -1,54 +1,102 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 
-const WORDS = "Real Food can solve this crisis.".split(" ");
+const LINES = ["Real Food can", "solve this crisis."];
 
-function FadeOutWord({
-  word,
-  scrollYProgress,
+// Build flat array of chars with their line index
+const ALL_CHARS: { char: string; lineIndex: number }[] = [];
+LINES.forEach((line, lineIndex) => {
+  for (const char of line) {
+    ALL_CHARS.push({ char, lineIndex });
+  }
+});
+
+function useIsMobile(threshold = 580) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () =>
+      setIsMobile(Math.min(window.innerWidth, window.innerHeight) <= threshold);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [threshold]);
+  return isMobile;
+}
+
+// Cubic ease-out: fast start, slow end
+function easeOut(e: number) {
+  return 1 - Math.pow(1 - e, 3);
+}
+
+function DisintegratingChar({
+  char,
   index,
   total,
+  scrollYProgress,
+  isMobile,
 }: {
-  word: string;
-  scrollYProgress: ReturnType<typeof useScroll>["scrollYProgress"];
+  char: string;
   index: number;
   total: number;
+  scrollYProgress: MotionValue<number>;
+  isMobile: boolean;
 }) {
-  // Fade out words sequentially over scroll progress 0.5–0.9
-  const wordStart = 0.5 + (index / total) * 0.4;
-  const wordEnd = 0.5 + ((index + 1) / total) * 0.4;
-  const opacity = useTransform(scrollYProgress, [wordStart, wordEnd], [1, 0]);
+  const staggerStart = 0.15 + (index / total) * 0.25;
+  const staggerEnd = staggerStart + 0.5;
+
+  const rawProgress = useTransform(scrollYProgress, [staggerStart, staggerEnd], [0, 1]);
+  const progress = useTransform(rawProgress, easeOut);
+
+  const opacity = useTransform(progress, [0, 1], [1, 0]);
+  const scale = useTransform(progress, [0, 1], [1, 0.1]);
+  const y = useTransform(progress, [0, 1], [0, -50]);
+  const filter = useTransform(progress, (v: number) =>
+    `blur(${v * 30}px) brightness(${1 + v * 9})`
+  );
+
   return (
-    <motion.span style={{ opacity }}>
-      {word}{" "}
+    <motion.span
+      style={{
+        display: "inline-block",
+        transformOrigin: "center center",
+        willChange: "transform, opacity",
+        color: "var(--off-white)",
+        opacity,
+        scale,
+        y,
+        filter: isMobile ? "none" : filter,
+      }}
+    >
+      {char === " " ? "\u00A0" : char}
     </motion.span>
   );
 }
 
 export default function RealFoodDefinition() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Text scrolls up during 0–0.5
-  const y = useTransform(scrollYProgress, [0, 0.4], [200, 0]);
+  let charIndex = 0;
 
   return (
     <div
       ref={containerRef}
+      id="solution"
       style={{
-        height: "300vh",
+        minHeight: isMobile ? "150svh" : "200svh",
         position: "relative",
         width: "100%",
         backgroundColor: "var(--off-black)",
       }}
     >
-      <section
-        id="solution"
+      <div
         style={{
           position: "sticky",
           top: 0,
@@ -57,34 +105,74 @@ export default function RealFoodDefinition() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "var(--padding-v) var(--padding-h)",
           overflow: "hidden",
         }}
       >
-        <motion.h2
+        <div
           style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
             fontFamily: "var(--font-grotesk-display)",
             fontWeight: 700,
-            fontSize: "clamp(48px, 10vw, 96px)",
-            lineHeight: 0.92,
+            fontSize: "clamp(var(--h-text-size), 12vw, 96px)",
+            lineHeight: 0.95,
             letterSpacing: "-0.02em",
-            textAlign: "center",
-            color: "var(--off-white)",
-            maxWidth: "900px",
-            y,
           }}
         >
-          {WORDS.map((word, i) => (
-            <FadeOutWord
-              key={i}
-              word={word}
-              scrollYProgress={scrollYProgress}
-              index={i}
-              total={WORDS.length}
-            />
-          ))}
-        </motion.h2>
-      </section>
+          {LINES.map((line, lineIndex) => {
+            const words = line.split(" ");
+            return (
+              <div
+                key={lineIndex}
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                }}
+              >
+                {words.map((word, wordIndex) => {
+                  const chars = word.split("");
+                  const wordEl = (
+                    <span key={wordIndex} style={{ display: "inline-flex" }}>
+                      {chars.map((c) => {
+                        const ci = charIndex++;
+                        return (
+                          <DisintegratingChar
+                            key={ci}
+                            char={c}
+                            index={ci}
+                            total={ALL_CHARS.length}
+                            scrollYProgress={scrollYProgress}
+                            isMobile={isMobile}
+                          />
+                        );
+                      })}
+                      {/* Space between words */}
+                      {wordIndex < words.length - 1 && (
+                        (() => {
+                          const ci = charIndex++;
+                          return (
+                            <DisintegratingChar
+                              key={`space-${ci}`}
+                              char=" "
+                              index={ci}
+                              total={ALL_CHARS.length}
+                              scrollYProgress={scrollYProgress}
+                              isMobile={isMobile}
+                            />
+                          );
+                        })()
+                      )}
+                    </span>
+                  );
+                  return wordEl;
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
