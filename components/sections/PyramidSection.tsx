@@ -1,8 +1,19 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, useSpring, MotionValue } from "framer-motion";
+
+function useIsMobile(threshold = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= threshold);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [threshold]);
+  return isMobile;
+}
 import { PYRAMID_TIERS } from "@/lib/constants";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
@@ -305,6 +316,7 @@ function TierDetail({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const foods = DETAIL_POSITIONS[tier.id] || [];
+  const isMobile = useIsMobile();
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -333,13 +345,13 @@ function TierDetail({
       <div
         style={{
           display: "flex",
-          flexDirection: "row",
-          alignItems: "flex-start",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "stretch" : "flex-start",
           justifyContent: "space-between",
-          gap: "40px",
+          gap: isMobile ? "24px" : "40px",
           padding: `${tier.id === "whole-grains" ? "0" : "var(--padding-v)"} 0`,
-          paddingBottom: "calc(var(--padding-v) * 3)",
-          paddingLeft: "clamp(40px, 14vw, 220px)",
+          paddingBottom: isMobile ? "var(--padding-v)" : "calc(var(--padding-v) * 3)",
+          paddingLeft: isMobile ? "var(--padding-h)" : "clamp(40px, 14vw, 220px)",
           paddingRight: "var(--padding-h)",
           maxWidth: "1400px",
           margin: "0 auto",
@@ -354,7 +366,7 @@ function TierDetail({
             display: "flex",
             flexDirection: "column",
             gap: "32px",
-            maxWidth: "360px",
+            maxWidth: isMobile ? "none" : "360px",
             x: textX,
           }}
         >
@@ -393,10 +405,10 @@ function TierDetail({
         <motion.div
           style={{
             flexShrink: 0,
-            width: "min(55vw, 700px)",
+            width: isMobile ? "100%" : "min(55vw, 700px)",
             aspectRatio: "1 / 1",
             position: "relative",
-            x: imagesX,
+            x: isMobile ? 0 : imagesX,
           }}
         >
           {foods.map((food, i) => (

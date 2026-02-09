@@ -2,8 +2,19 @@
 
 import Image from "next/image";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { staggerContainer, fadeInUp } from "@/lib/animations";
+
+function useIsMobile(threshold = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= threshold);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [threshold]);
+  return isMobile;
+}
 import ScrollReveal from "@/components/ui/ScrollReveal";
 
 const STATS = [
@@ -142,6 +153,7 @@ function RevealParagraph() {
 export default function HealthCrisisSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isMobile = useIsMobile();
 
   return (
     <section
@@ -197,9 +209,9 @@ export default function HealthCrisisSection() {
           animate={isInView ? "visible" : "hidden"}
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            columnGap: "48px",
-            rowGap: "var(--gap-h)",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            columnGap: isMobile ? "0" : "48px",
+            rowGap: isMobile ? "40px" : "var(--gap-h)",
             marginBottom: "calc(var(--padding-v) * 3)",
             width: "100%",
             alignItems: "end",

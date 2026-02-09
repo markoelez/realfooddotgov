@@ -43,7 +43,7 @@ export default function RealAnswersSection() {
             key={i}
             style={{
               flexShrink: 0,
-              width: "320px",
+              width: "min(320px, 80vw)",
               backgroundColor: "var(--off-white)",
               borderRadius: "16px",
               padding: "24px",

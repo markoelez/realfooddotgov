@@ -4,6 +4,17 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
+function useIsMobile(threshold = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= threshold);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, [threshold]);
+  return isMobile;
+}
+
 const FOODS = [
   { image: "/images/pyramid/avocado.webp", name: "Avocados" },
   { image: "/images/pyramid/eggs.webp", name: "Eggs" },
@@ -26,6 +37,11 @@ const SIDE_OFFSET = 160;
 
 export default function EatRealCarousel() {
   const [current, setCurrent] = useState(0);
+  const isMobile = useIsMobile();
+
+  const centerSize = isMobile ? 200 : CENTER_SIZE;
+  const sideSize = isMobile ? 130 : SIDE_SIZE;
+  const sideOffset = isMobile ? 90 : SIDE_OFFSET;
 
   const advance = useCallback(() => {
     setCurrent((prev) => (prev + 1) % FOODS.length);
@@ -74,8 +90,8 @@ export default function EatRealCarousel() {
       <div
         style={{
           position: "relative",
-          width: `${CENTER_SIZE + SIDE_OFFSET * 2}px`,
-          height: `${CENTER_SIZE}px`,
+          width: `${centerSize + sideOffset * 2}px`,
+          height: `${centerSize}px`,
           marginBottom: "48px",
         }}
       >
@@ -85,9 +101,9 @@ export default function EatRealCarousel() {
             position: "absolute",
             top: "50%",
             left: "50%",
-            width: `${SIDE_SIZE}px`,
-            height: `${SIDE_SIZE}px`,
-            transform: `translate(calc(-50% - ${CENTER_SIZE * 0.65}px), -50%)`,
+            width: `${sideSize}px`,
+            height: `${sideSize}px`,
+            transform: `translate(calc(-50% - ${centerSize * 0.65}px), -50%)`,
             zIndex: 1,
           }}
         >
@@ -126,8 +142,8 @@ export default function EatRealCarousel() {
             position: "absolute",
             top: "50%",
             left: "50%",
-            width: `${CENTER_SIZE}px`,
-            height: `${CENTER_SIZE}px`,
+            width: `${centerSize}px`,
+            height: `${centerSize}px`,
             transform: "translate(-50%, -50%)",
             zIndex: 3,
           }}
@@ -135,9 +151,9 @@ export default function EatRealCarousel() {
           <AnimatePresence mode="popLayout">
             <motion.div
               key={current}
-              initial={{ scale: 0.65, opacity: 0.7, x: SIDE_OFFSET }}
+              initial={{ scale: 0.65, opacity: 0.7, x: sideOffset }}
               animate={{ scale: 1, opacity: 1, x: 0 }}
-              exit={{ scale: 0.65, opacity: 0, x: -SIDE_OFFSET }}
+              exit={{ scale: 0.65, opacity: 0, x: -sideOffset }}
               transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
               style={{
                 width: "100%",
@@ -168,9 +184,9 @@ export default function EatRealCarousel() {
             position: "absolute",
             top: "50%",
             left: "50%",
-            width: `${SIDE_SIZE}px`,
-            height: `${SIDE_SIZE}px`,
-            transform: `translate(calc(-50% + ${CENTER_SIZE * 0.65}px), -50%)`,
+            width: `${sideSize}px`,
+            height: `${sideSize}px`,
+            transform: `translate(calc(-50% + ${centerSize * 0.65}px), -50%)`,
             zIndex: 1,
           }}
         >
