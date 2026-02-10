@@ -96,6 +96,7 @@ export default function Header() {
           right: 0,
           top: springTop,
           y: shouldHide ? -100 : springY,
+          display: "flex",
           justifyContent: "center",
           alignItems: "center",
           gap: "10px",
