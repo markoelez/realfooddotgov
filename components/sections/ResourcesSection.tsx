@@ -51,12 +51,6 @@ function DocCard({
     [entryStart, entryEnd],
     [CARD_ROTATIONS[index] * 2, CARD_ROTATIONS[index]]
   );
-  const opacity = useTransform(
-    scrollYProgress,
-    [entryStart, entryStart + segmentSize * 0.3],
-    [0, 1]
-  );
-
   return (
     <motion.a
       href={resource.url}
@@ -75,7 +69,6 @@ function DocCard({
         backgroundColor: resource.bgColor,
         y,
         rotate,
-        opacity,
         zIndex: index + 1,
       }}
     >
