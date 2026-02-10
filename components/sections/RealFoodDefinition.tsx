@@ -90,7 +90,7 @@ export default function RealFoodDefinition() {
       ref={containerRef}
       id="solution"
       style={{
-        minHeight: isMobile ? "150svh" : "200svh",
+        minHeight: isMobile ? "130svh" : "180svh",
         position: "relative",
         width: "100%",
         backgroundColor: "var(--off-black)",

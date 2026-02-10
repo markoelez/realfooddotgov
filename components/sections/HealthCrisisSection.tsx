@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { staggerContainer, fadeInUp } from "@/lib/animations";
+
 
 function useIsMobile(threshold = 768) {
   const [isMobile, setIsMobile] = useState(false);
@@ -19,27 +19,119 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
 
 const STATS = [
   {
-    value: "50%",
+    numValue: 50,
     barHeight: "40%",
     before: "50% of Americans have ",
     highlight: "prediabetes or diabetes",
     after: "",
   },
   {
-    value: "75%",
+    numValue: 75,
     barHeight: "60%",
     before: "75% of adults report having at least one ",
     highlight: "chronic condition",
     after: "",
   },
   {
-    value: "90%",
+    numValue: 90,
     barHeight: "78%",
     before: "90% of U.S. healthcare spending goes to treating ",
     highlight: "chronic disease",
     after: "\u2014much of which is linked to diet and lifestyle",
   },
 ];
+
+function AnimatedCounter({ target, isInView }: { target: number; isInView: boolean }) {
+  const motionValue = useMotionValue(0);
+  const spring = useSpring(motionValue, { stiffness: 50, damping: 20 });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      motionValue.set(target);
+    }
+  }, [isInView, motionValue, target]);
+
+  useEffect(() => {
+    const unsubscribe = spring.on("change", (v) => {
+      setDisplay(Math.round(v));
+    });
+    return unsubscribe;
+  }, [spring]);
+
+  return <>{display}%</>;
+}
+
+function StatBar({
+  stat,
+  isInView,
+  delay,
+}: {
+  stat: (typeof STATS)[number];
+  isInView: boolean;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.6, delay }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+      }}
+    >
+      {/* Red bar — grows upward */}
+      <div
+        style={{
+          position: "relative",
+          marginBottom: "16px",
+          overflow: "hidden",
+        }}
+      >
+        <motion.div
+          initial={{ paddingBottom: "0%" }}
+          animate={isInView ? { paddingBottom: stat.barHeight } : { paddingBottom: "0%" }}
+          transition={{ duration: 1.2, delay, ease: [0.25, 1, 0.5, 1] }}
+          style={{
+            backgroundColor: "#b50000",
+            padding: "20px",
+            position: "relative",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "var(--font-grotesk-display)",
+              fontWeight: 700,
+              fontSize: "clamp(28px, 4vw, 48px)",
+              lineHeight: 1,
+              letterSpacing: "-0.03em",
+              color: "var(--off-black)",
+              display: "block",
+            }}
+          >
+            <AnimatedCounter target={stat.numValue} isInView={isInView} />
+          </span>
+        </motion.div>
+      </div>
+      {/* Description below bar */}
+      <p
+        style={{
+          fontSize: "calc(24 / 16 * 1rem)",
+          lineHeight: 0.9,
+          fontWeight: 700,
+          fontFamily: "var(--font-grotesk-bold)",
+          color: "var(--off-white)",
+        }}
+      >
+        {stat.before}
+        <span style={{ color: "var(--red-bright)" }}>{stat.highlight}</span>
+        {stat.after}
+      </p>
+    </motion.div>
+  );
+}
 
 const REVEAL_TEXT = "For decades we\u2019ve been misled by guidance that prioritized highly processed food, and are now facing rates of unprecedented chronic disease.";
 const REVEAL_WORDS = REVEAL_TEXT.split(" ");
@@ -202,11 +294,8 @@ export default function HealthCrisisSection() {
         </ScrollReveal>
 
         {/* Stats - bar chart style */}
-        <motion.div
+        <div
           ref={ref}
-          variants={staggerContainer}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
           style={{
             display: "grid",
             gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
@@ -217,58 +306,15 @@ export default function HealthCrisisSection() {
             alignItems: "end",
           }}
         >
-          {STATS.map((stat) => (
-            <motion.div
-              key={stat.value}
-              variants={fadeInUp}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "stretch",
-              }}
-            >
-              {/* Red bar */}
-              <div
-                style={{
-                  backgroundColor: "#b50000",
-                  borderRadius: "0",
-                  padding: "20px",
-                  paddingBottom: stat.barHeight,
-                  marginBottom: "16px",
-                  position: "relative",
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "var(--font-grotesk-display)",
-                    fontWeight: 700,
-                    fontSize: "clamp(28px, 4vw, 48px)",
-                    lineHeight: 1,
-                    letterSpacing: "-0.03em",
-                    color: "var(--off-black)",
-                    display: "block",
-                  }}
-                >
-                  {stat.value}
-                </span>
-              </div>
-              {/* Description below bar */}
-              <p
-                style={{
-                  fontSize: "calc(24 / 16 * 1rem)",
-                  lineHeight: 0.9,
-                  fontWeight: 700,
-                  fontFamily: "var(--font-grotesk-bold)",
-                  color: "var(--off-white)",
-                }}
-              >
-                {stat.before}
-                <span style={{ color: "var(--red-bright)" }}>{stat.highlight}</span>
-                {stat.after}
-              </p>
-            </motion.div>
+          {STATS.map((stat, i) => (
+            <StatBar
+              key={stat.numValue}
+              stat={stat}
+              isInView={isInView}
+              delay={i * 0.15}
+            />
           ))}
-        </motion.div>
+        </div>
 
         {/* Image + progressive text reveal pinned together */}
         <RevealParagraph />
